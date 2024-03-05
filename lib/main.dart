@@ -1,16 +1,21 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_app_check/firebase_app_check.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter_quiz/views/home_screen.dart';
+import 'package:flutter_quiz/provider/home_provider.dart';
+import 'package:flutter_quiz/utils/routes/routes.dart';
+import 'package:provider/provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  try {
-    await Firebase.initializeApp();
-  } catch (e) {
-    print('Failed to initialize Firebase: $e');
-  }
-  runApp(const MyApp());
+  await Firebase.initializeApp();
+  await FirebaseAppCheck.instance.activate();
+  FirebaseFirestore.instance.settings =
+      const Settings(persistenceEnabled: true);
+  runApp(ChangeNotifierProvider(
+    create: (context) => HomeProvider(),
+    child: const MyApp(),
+  ));
 }
 
 class MyApp extends StatelessWidget {
@@ -27,7 +32,8 @@ class MyApp extends StatelessWidget {
         ),
         useMaterial3: true,
       ),
-      home: const HomePage(),
+      initialRoute: initialRoute,
+      routes: routes,
     );
   }
 }
