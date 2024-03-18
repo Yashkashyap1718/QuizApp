@@ -24,24 +24,20 @@ class SplashScreen extends StatelessWidget {
     }
 
     navigateNext() async {
-      navigat(mobileRoute);
       await db.getUsers().then((user) async {
         if (user.uid != null && user.uid!.isNotEmpty) {
-          await provider.updateUser(user);
-          navigat(bottomBarRoute);
-          //     // await db.getUserStatus().then((value) {
-          //     //   if (value.userId != null && value.userId!.isNotEmpty) {
-          //     //     provider.updateUser(
-          //     //       user,
-          //     //     );
-          //     //     navigat(bottomBarRoute);
-          //     //   } else {
-          //     //     navigat(mobileRoute);
-          //     //   }
-          //     // }
-          //     // );
-          //   } else {
-          //     navigat(mobileRoute);
+          await db.getUserStatus().then((value) {
+            // if (value.userId != null && value.userId!.isNotEmpty) {
+            //   provider.updateUser(user, value);
+            //   navigat(bottomBarRoute);
+            // } else {
+            //   navigat(mobileRoute);
+            // }
+
+            navigat(bottomBarRoute);
+          });
+        } else {
+          navigat(mobileRoute);
         }
       });
     }
@@ -52,10 +48,10 @@ class SplashScreen extends StatelessWidget {
       width: width,
       height: height,
       padding: EdgeInsets.symmetric(horizontal: width * 0.25),
-      // decoration: const BoxDecoration(color: whiteColor),
+      decoration: const BoxDecoration(color: whiteColor),
       child: Center(
         child: Image.asset(
-          "assets/quiz2.png",
+          'assets/quiz2.png',
           fit: BoxFit.contain,
         ),
       ),

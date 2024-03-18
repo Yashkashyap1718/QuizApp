@@ -2,22 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_quiz/widgets/results_card.dart';
 
 class ResultsScreen extends StatelessWidget {
-  const ResultsScreen(
-      {super.key,
-      required this.score,
-      required this.totalQuestions,
-      required this.whichTopic});
-  final int score;
-  final int totalQuestions;
-  final String whichTopic;
+  const ResultsScreen({
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
     const Color bgColor3 = Color(0xFF5170FD);
-    print(score);
-    print(totalQuestions);
-    final double percentageScore = (score / totalQuestions) * 100;
-    final int roundedPercentageScore = percentageScore.round();
+
+    // final double percentageScore = (score / totalQuestions) * 100;
+    // final int roundedPercentageScore = percentageScore.round();
     const Color cardColor = Color(0xFF4993FA);
     return WillPopScope(
       onWillPop: () {
@@ -75,7 +69,7 @@ class ResultsScreen extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Text(
-                  whichTopic.toUpperCase(),
+                  "whichTopic.toUpperCase()",
                   style: Theme.of(context).textTheme.headlineSmall!.copyWith(
                         fontSize: 15,
                         color: Colors.white,
@@ -83,9 +77,9 @@ class ResultsScreen extends StatelessWidget {
                       ),
                 ),
               ),
-              ResultsCard(
-                  roundedPercentageScore: roundedPercentageScore,
-                  bgColor3: bgColor3),
+              // ResultsCard(
+              //     roundedPercentageScore: roundedPercentageScore,
+              //     bgColor3: bgColor3),
               const SizedBox(
                 height: 25,
               ),

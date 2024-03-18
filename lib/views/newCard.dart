@@ -27,11 +27,11 @@ class _NewCardState extends State<NewCard> {
     const Color cardColor = Color(0xFF4993FA);
 
     // Get a list of 4 randomly selected Questions objects
-    Map<dynamic, dynamic> randomQuestionsMap =
-        getRandomQuestionsAndOptions(widget.typeOfTopic, 10);
+    // Map<dynamic, dynamic> randomQuestionsMap =
+    //     getRandomQuestionsAndOptions(widget.typeOfTopic, 10);
 
-    List<dynamic> randomQuestions = randomQuestionsMap.keys.toList();
-    dynamic randomOptions = randomQuestionsMap.values.toList();
+    // List<dynamic> randomQuestions = randomQuestionsMap.keys.toList();
+    // dynamic randomOptions = randomQuestionsMap.values.toList();
 
     return Scaffold(
       backgroundColor: bgColor3,
@@ -133,15 +133,14 @@ class _NewCardState extends State<NewCard> {
                       elevation: MaterialStateProperty.all(4),
                     ),
                     onPressed: () {
-                      Navigator.of(context).pushReplacement(
-                        MaterialPageRoute(
-                          builder: (context) => QuizScreen(
-                            questionlenght: randomQuestions,
-                            optionsList: randomOptions,
-                            topicType: widget.topicName,
-                          ),
-                        ),
-                      );
+                      // Navigator.of(context).pushReplacement(
+                      //   MaterialPageRoute(
+                      //     builder: (context) => QuizScreen(
+                      //       questionlenght: randomQuestions,
+                      //       topicType: widget.topicName, optionsList: widget.,
+                      //     ),
+                      //   ),
+                      // );
                     },
                     child: const Text(
                       "Start Quiz",

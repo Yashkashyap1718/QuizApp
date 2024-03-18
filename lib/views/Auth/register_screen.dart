@@ -1,6 +1,7 @@
 // ignore_for_file: use_build_context_synchronously, must_be_immutable
 
 import 'package:flutter_quiz/models/user_model.dart';
+import 'package:flutter_quiz/models/userstatus_model.dart';
 import 'package:flutter_quiz/provider/home_provider.dart';
 import 'package:flutter_quiz/src/databaseProvider.dart';
 import 'package:flutter_quiz/src/firebaseClient.dart';
@@ -100,32 +101,25 @@ class RegisterScreen extends StatelessWidget {
 
       try {
         // Convert UserModel instance to JSON using its toJson method
-
-        print('-----1');
         var userData = user.toJson();
-        print('-----2');
-
+        var userStatus =
+            UserStatus(quiz: 0, userId: uid, username: nameController.text);
+        var statusData = userStatus.toMap();
         await db.cleanUserTable();
-        print('-----3');
-
+        await firebaseClient.addData('userstatus', statusData);
         await firebaseClient.addData('users', userData);
-        print('-----4');
-
         await db.insertUser(user);
-        print('-------users------------${user}');
-        print('-----5');
 
-        // await db.insertUserStatus(userStatus).then((value) {
-        //   p.updateUser(user,);
-        nameController.clear();
-        mobileController.clear();
-        emailController.clear();
-
-        Navigator.pushNamedAndRemoveUntil(
-            context, bottomBarRoute, (route) => false);
-        // p.setpic(null);
-        p.hideLoader();
-        // });
+        await db.insertUserStatus(userStatus).then((value) {
+          p.updateUser(user, userStatus);
+          nameController.clear();
+          mobileController.clear();
+          emailController.clear();
+          Navigator.pushNamedAndRemoveUntil(
+              context, bottomBarRoute, (route) => false);
+          // p.setpic(null);
+          p.hideLoader();
+        });
       } catch (e) {
         showDialog(
             context: context,

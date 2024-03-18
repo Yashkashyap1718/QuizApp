@@ -1,11 +1,10 @@
 // ignore_for_file: file_names
 
-import 'dart:convert';
-
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_quiz/models/user_model.dart';
+import 'package:flutter_quiz/models/userstatus_model.dart';
 import 'package:flutter_quiz/src/databaseProvider.dart';
 import 'package:http/http.dart' as http;
 
@@ -45,32 +44,7 @@ class FirebaseClient {
 
   // check if user exist
 
-  // Future<bool> getUserBy(String uid, context) async {
-  //   try {
-  //     CollectionReference usersCollection =
-  //         FirebaseFirestore.instance.collection('users');
-
-  //     QuerySnapshot querySnapshot =
-  //         await usersCollection.where('uid', isEqualTo: uid).get();
-
-  //     if (querySnapshot.docs.isNotEmpty || querySnapshot.docs.first.exists) {
-  //       await db.cleanUserTable();
-  //       final user = querySnapshot.docs.first.data() as Map<String, dynamic>;
-  //       await db.insertUser(UserModel.fromJson(user));
-  //       final statusSnapshot = await getStatusBy(uid, context);
-  //       if (statusSnapshot.isNotEmpty && statusSnapshot['userId'] == uid) {
-  //         return true;
-  //       }
-  //       return true;
-  //     } else {
-  //       return false;
-  //     }
-  //   } catch (e) {
-  //     return false;
-  //   }
-  // }
-
-  Future<bool> getUserBy(String uid, BuildContext context) async {
+  Future<bool> getUserBy(String uid, context) async {
     try {
       CollectionReference usersCollection =
           FirebaseFirestore.instance.collection('users');
@@ -82,6 +56,10 @@ class FirebaseClient {
         await db.cleanUserTable();
         final user = querySnapshot.docs.first.data() as Map<String, dynamic>;
         await db.insertUser(UserModel.fromJson(user));
+        final statusSnapshot = await getStatusBy(uid, context);
+        if (statusSnapshot.isNotEmpty && statusSnapshot['userId'] == uid) {
+          return true;
+        }
         return true;
       } else {
         return false;
@@ -91,25 +69,25 @@ class FirebaseClient {
     }
   }
 
-  // Future<Map<String, dynamic>> getStatusBy(String uid, context) async {
-  //   try {
-  //     CollectionReference statusCollection =
-  //         FirebaseFirestore.instance.collection('userstatus');
-  //     QuerySnapshot statusSnapshot =
-  //         await statusCollection.where('userId', isEqualTo: uid).get();
+  Future<Map<String, dynamic>> getStatusBy(String uid, context) async {
+    try {
+      CollectionReference statusCollection =
+          FirebaseFirestore.instance.collection('userstatus');
+      QuerySnapshot statusSnapshot =
+          await statusCollection.where('userId', isEqualTo: uid).get();
 
-  //     if (statusSnapshot.docs.isNotEmpty || statusSnapshot.docs.first.exists) {
-  //       final status = statusSnapshot.docs.first.data() as Map<String, dynamic>;
+      if (statusSnapshot.docs.isNotEmpty || statusSnapshot.docs.first.exists) {
+        final status = statusSnapshot.docs.first.data() as Map<String, dynamic>;
 
-  //       await db.insertUserStatus(UserStatus.fromMap(status));
+        await db.insertUserStatus(UserStatus.fromMap(status));
 
-  //       return status;
-  //     }
-  //     return {"status": false};
-  //   } catch (e) {
-  //     return {"status": false};
-  //   }
-  // }
+        return status;
+      }
+      return {"status": false};
+    } catch (e) {
+      return {"status": false};
+    }
+  }
 
   // get video meta data
   // Future<dynamic> getDetail(String userUrl, context) async {
@@ -147,37 +125,34 @@ class FirebaseClient {
   //   }
   // }
 
-  // Future<bool> updateDetails(UserStatus userStatus) async {
-  //   try {
-  //     await FirebaseFirestore.instance
-  //         .collection('userstatus')
-  //         .where('userId',
-  //             isEqualTo: userStatus
-  //                 .userId) // Assuming 'userId' is a field in your documents
-  //         .get()
-  //         .then((QuerySnapshot querySnapshot) {
-  //       for (var doc in querySnapshot.docs) {
-  //         doc.reference.update(
-  //           {
-  //             'videos': userStatus.videos,
-  //             'quiz': userStatus.quiz,
-  //             'quitTime': userStatus.quizTime,
-  //             'mocktest': userStatus.mocktest,
-  //             'roadathon': userStatus.roadathon,
-  //           },
-  //         );
-  //       }
-  //     });
+  Future<bool> updateDetails(UserStatus userStatus) async {
+    try {
+      await FirebaseFirestore.instance
+          .collection('userstatus')
+          .where('userId',
+              isEqualTo: userStatus
+                  .userId) // Assuming 'userId' is a field in your documents
+          .get()
+          .then((QuerySnapshot querySnapshot) {
+        for (var doc in querySnapshot.docs) {
+          doc.reference.update(
+            {
+              'quiz': userStatus.quiz,
+              'quitTime': userStatus.quizTime,
+            },
+          );
+        }
+      });
 
-  //     return true;
-  //   } catch (e) {
-  //     if (kDebugMode) {
-  //       print('Error updating user status in Firestore: $e');
-  //     }
-  //     // Handle the error as needed
-  //     return false;
-  //   }
-  // }
+      return true;
+    } catch (e) {
+      if (kDebugMode) {
+        print('Error updating user status in Firestore: $e');
+      }
+      // Handle the error as needed
+      return false;
+    }
+  }
 
   Future<bool> deleteUser(uid, collection) async {
     try {
